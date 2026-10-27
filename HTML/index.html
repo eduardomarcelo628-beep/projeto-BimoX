@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bimo X! - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .login-page-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            width: 420px;
+            max-width: 90%;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: #fff;
+            padding: 35px 40px;   
+            box-shadow: rgba(106, 90, 205, 0.8) -5px 5px, rgba(106, 90, 205, 0.6) -10px 10px, rgba(106, 90, 205, 0.4) -15px 15px, rgba(106, 90, 205, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            font-size: 2.3rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            height: 52px;
+            margin: 22px 0;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            outline: none;
+            font-size: 15px;
+            color: #fff;
+            padding: 15px 48px 15px 20px;
+            transition: border-color 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #f02eaa;
+        }
+
+        .input-box input::placeholder {
+            color: #c5c5c5;
+        }
+
+        .input-box img {
+            position: absolute;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+        }
+
+        .remember-me {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0 20px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            accent-color: #f02eaa;
+            cursor: pointer;
+        }
+
+        .remember-me a {
+            color: #d8b4fe;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .remember-me a:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(90deg, rgba(106, 90, 205, 1) 0%, rgba(240, 46, 170, 1) 100%);
+            border: none;
+            border-radius: 40px;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(240, 46, 170, 0.3);
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #fff;
+            color: #120e29;
+            transform: translateY(-2px);
+        }
+
+        .signup-toggle {
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .signup-toggle a {
+            text-decoration: none;
+            color: #f02eaa;
+            font-weight: 600;
+        }
+
+        .signup-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal de Recuperação de Senha */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 8, 22, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 440px;
+            max-width: 90%;
+            background: rgba(25, 20, 48, 0.95);
+            border: 2px solid rgba(240, 46, 170, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            color: #fff;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .modal-card h2 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .modal-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .modal-close-btn:hover {
+            opacity: 1;
+        }
+    </style>
+    <!-- Supabase CDN (Opcional para conexão direta) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="login-page-body">
+
+    <main class="login-card">
+        <form id="authForm" novalidate>
+            <h1 id="formTitle">Login Bimo!</h1>
+            
+            <div class="input-box">
+                <input type="email" id="emailInput" placeholder="Type your e-mail" required autocomplete="email">
+                <img src="../img/usericon.png" alt="user icon">
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="passwordInput" placeholder="Type your password (mín. 6 caracteres)" required autocomplete="current-password">
+                <img src="../img/passwordicon.png" alt="password icon">
+            </div>
+
+            <div class="remember-me" id="rememberRow">
+                <label for="remember-me">
+                    <input type="checkbox" id="remember-me"> Remember me
+                </label>
+                <a href="#" id="forgotBtn">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="submitBtn" class="login-btn">Login</button>
+
+            <div class="signup-toggle">
+                <p id="toggleText">Don't have an account? <a href="#" id="toggleModeBtn">Sign up</a></p>
+            </div>
+        </form>
+    </main>
+
+    <!-- Modal de Recuperação de Senha -->
+    <div class="modal-overlay" id="recoveryModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeModalBtn" title="Fechar">&times;</button>
+            <h2>🔑 Recuperar Senha</h2>
+            <p>Informe seu e-mail cadastrado e defina sua nova senha para recuperar o acesso.</p>
+
+            <form id="recoveryForm">
+                <div class="input-box">
+                    <input type="email" id="recoveryEmail" placeholder="Seu e-mail cadastrado" required>
+                    <img src="../img/usericon.png" alt="user icon">
+                </div>
+                <div class="input-box">
+                    <input type="password" id="recoveryNewPassword" placeholder="Nova senha (mín. 6 caracteres)" required>
+                    <img src="../img/passwordicon.png" alt="password icon">
+                </div>
+                <button type="submit" id="recoverySubmitBtn" class="login-btn">Redefinir Senha</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/supabase-auth.js"></script>
+    <script>
+        let isSignUp = false;
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleText = document.getElementById('toggleText');
+        const toggleModeBtn = document.getElementById('toggleModeBtn');
+        const rememberRow = document.getElementById('rememberRow');
+        const authForm = document.getElementById('authForm');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+
+        // Modal de Recuperação
+        const forgotBtn = document.getElementById('forgotBtn');
+        const recoveryModal = document.getElementById('recoveryModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const recoveryForm = document.getElementById('recoveryForm');
+        const recoveryEmail = document.getElementById('recoveryEmail');
+        const recoveryNewPassword = document.getElementById('recoveryNewPassword');
+        const recoverySubmitBtn = document.getElementById('recoverySubmitBtn');
+
+        // Se já estiver logado, redireciona para a tela de artigos
+        AuthService.getCurrentUser().then(user => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        function handleToggleMode(e) {
+            e.preventDefault();
+            isSignUp = !isSignUp;
+            if (isSignUp) {
+                formTitle.textContent = "Cadastro Bimo!";
+                submitBtn.textContent = "Criar Conta";
+                rememberRow.style.display = "none";
+                toggleText.innerHTML = `Já tem uma conta? <a href="#" id="toggleModeBtn">Fazer Login</a>`;
+            } else {
+                formTitle.textContent = "Login Bimo!";
+                submitBtn.textContent = "Login";
+                rememberRow.style.display = "flex";
+                toggleText.innerHTML = `Don't have an account? <a href="#" id="toggleModeBtn">Sign up</a>`;
+            }
+            document.getElementById('toggleModeBtn').addEventListener('click', handleToggleMode);
+        }
+
+        toggleModeBtn.addEventListener('click', handleToggleMode);
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showToast("Por favor, preencha todos os campos.", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Carregando...";
+
+            try {
+                if (isSignUp) {
+                    await AuthService.signup(email, password);
+                    showToast("Conta criada com sucesso! Entrando...", "success");
+                } else {
+                    await AuthService.login(email, password);
+                    showToast("Login realizado com sucesso!", "success");
+                }
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 900);
+            } catch (err) {
+                showToast(err.message || "Erro ao processar autenticação.", "error");
+                submitBtn.disabled = false;
+                submitBtn.textContent = isSignUp ? "Criar Conta" : "Login";
+            }
+        });
+
+        // Abrir Modal de Recuperação
+        forgotBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            recoveryEmail.value = emailInput.value.trim();
+            recoveryModal.classList.add('active');
+        });
+
+        // Fechar Modal
+        closeModalBtn.addEventListener('click', () => {
+            recoveryModal.classList.remove('active');
+        });
+
+        recoveryModal.addEventListener('click', (e) => {
+            if (e.target === recoveryModal) {
+                recoveryModal.classList.remove('active');
+            }
+        });
+
+        // Processar Redefinição de Senha
+        recoveryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = recoveryEmail.value.trim();
+            const newPass = recoveryNewPassword.value.trim();
+
+            if (!email || !newPass) {
+                showToast("Preencha o e-mail e a nova senha.", "error");
+                return;
+            }
+
+            recoverySubmitBtn.disabled = true;
+            recoverySubmitBtn.textContent = "Atualizando...";
+
+            try {
+                const result = await AuthService.resetPassword(email, newPass);
+                if (result.mode === 'supabase') {
+                    showToast("Link de recuperação enviado para sua caixa de entrada!", "success");
+                } else {
+                    showToast("Senha redefinida com sucesso! Faça login com a nova senha.", "success");
+                    passwordInput.value = newPass;
+                    emailInput.value = email;
+                }
+                recoveryModal.classList.remove('active');
+            } catch (err) {
+                showToast(err.message || "Erro ao redefinir senha.", "error");
+            } finally {
+                recoverySubmitBtn.disabled = false;
+                recoverySubmitBtn.textContent = "Redefinir Senha";
+            }
+        });
+    </script>
+</body>
+</html>

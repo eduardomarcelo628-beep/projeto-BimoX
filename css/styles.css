@@ -1,0 +1,210 @@
+/* Reset & Global Tokens */
+:root {
+    --bg-primary: #120e29;
+    --bg-gradient: radial-gradient(circle at 50% 20%, #2e1c59 0%, #110d24 80%);
+    --card-bg: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(255, 255, 255, 0.15);
+    --accent-purple: #6a5acd;
+    --accent-pink: #f02eaa;
+    --accent-gradient: linear-gradient(90deg, #6a5acd 0%, #f02eaa 100%);
+    --text-main: #ffffff;
+    --text-muted: #b9b6d3;
+    --font-family: 'Montserrat', sans-serif;
+    --glass-shadow: rgba(106, 90, 205, 0.4) -5px 5px, rgba(106, 90, 205, 0.2) -10px 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+body {
+    min-height: 100vh;
+    background: url('../img/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Glassmorphism Generic Card */
+.glass-panel {
+    background: rgba(25, 20, 48, 0.65);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(15px);
+    background: rgba(18, 14, 41, 0.75);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-main);
+}
+
+.brand-badge {
+    background: var(--accent-gradient);
+    color: #fff;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px rgba(240, 46, 170, 0.4);
+}
+
+.brand-text {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-tag {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.user-tag strong {
+    color: #fff;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+
+.btn-primary {
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(240, 46, 170, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(240, 46, 170, 0.5);
+    background: #fff;
+    color: #000;
+}
+
+/* Notification Toast */
+.toast-msg {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    z-index: 9999;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+.toast-msg.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.toast-success {
+    background: #10b981;
+}
+.toast-error {
+    background: #ef4444;
+}
+
+/* Responsividade Mobile Global */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1rem 1.2rem;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .nav-user {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .user-tag {
+        font-size: 0.82rem;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 2rem !important;
+    }
+
+    .dashboard-hero p {
+        font-size: 0.98rem !important;
+    }
+
+    .article-header h1 {
+        font-size: 1.85rem !important;
+    }
+
+    .article-body {
+        padding: 1.6rem 1.2rem !important;
+    }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: auto;
+}
+footer a {
+    color: #f02eaa;
+    text-decoration: none;
+}

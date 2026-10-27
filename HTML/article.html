@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bimo X! - Leitura do Artigo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Consolas&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/article.css">
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <a href="dashboard.html" class="nav-brand">
+            <span class="brand-badge">X!</span>
+            <span class="brand-text">Bimo X</span>
+        </a>
+        <div class="nav-user">
+            <a href="dashboard.html" class="btn-ghost">
+                &larr; Voltar aos Artigos
+            </a>
+            <button id="logoutBtn" class="btn-ghost" title="Sair do sistema">
+                Sair
+            </button>
+        </div>
+    </header>
+
+    <main class="article-detail-container">
+        <a href="dashboard.html" class="back-link">&larr; Voltar para a lista</a>
+
+        <div id="articleContentArea">
+            <!-- Conteúdo carregado via JS -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 <strong>Bimo X!</strong> Plataforma de Estudos em Computação.</p>
+    </footer>
+
+    <script src="../data/articles.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script>
+        // Autenticação
+        AuthService.requireAuth();
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            AuthService.logout();
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        const article = ARTICLES_DATA.find(a => a.id === articleId);
+        const contentArea = document.getElementById('articleContentArea');
+
+        if (!article) {
+            contentArea.innerHTML = `
+                <div class="article-body" style="text-align: center;">
+                    <h2>Artigo não encontrado</h2>
+                    <p>O artigo que você está procurando não existe ou foi movido.</p>
+                    <a href="dashboard.html" class="btn-primary" style="margin-top: 1.5rem;">Voltar ao Dashboard</a>
+                </div>
+            `;
+        } else {
+            document.title = `${article.title} - Bimo X!`;
+            const isCompleted = ProgressManager.isCompleted(article.id);
+
+            contentArea.innerHTML = `
+                <header class="article-header">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="category-tag">${article.categoryName}</span>
+                    </div>
+                    <h1>${article.icon} ${article.title}</h1>
+                    <div class="article-meta">
+                        <span>⏱️ Tempo de leitura: ${article.readTime}</span>
+                        <span>•</span>
+                        <span>100% Gratuito</span>
+                    </div>
+                </header>
+
+                <article class="article-body">
+                    ${article.content}
+
+                    <!-- Conclusão de Leitura -->
+                    <div class="completion-banner">
+                        <div>
+                            <h3 style="margin: 0 0 4px; color: #fff;">Finalizou este assunto?</h3>
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Marque para registrar no seu histórico de evolução.</p>
+                        </div>
+                        <button id="completeBtn" class="btn-complete ${isCompleted ? 'active' : ''}">
+                            ${isCompleted ? '✓ Artigo Concluído' : '○ Marcar como Lido'}
+                        </button>
+                    </div>
+
+                    <div class="article-action-box">
+                        <a href="dashboard.html" class="btn-ghost">&larr; Ver outros temas</a>
+                        <button class="btn-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Voltar ao topo &uarr;</button>
+                    </div>
+                </article>
+            `;
+
+            // Botão de Marcar como Concluído
+            const completeBtn = document.getElementById('completeBtn');
+            completeBtn.addEventListener('click', () => {
+                const completedList = ProgressManager.toggleArticle(article.id);
+                const nowDone = completedList.includes(article.id);
+                
+                if (nowDone) {
+                    completeBtn.classList.add('active');
+                    completeBtn.textContent = '✓ Artigo Concluído';
+                    showToast('Parabéns! Artigo marcado como concluído 🚀', 'success');
+                } else {
+                    completeBtn.classList.remove('active');
+                    completeBtn.textContent = '○ Marcar como Lido';
+                    showToast('Artigo desmarcado.', 'success');
+                }
+            });
+
+            // Enriquecer blocos de código com botão "Copiar"
+            const codeBlocks = contentArea.querySelectorAll('.code-container');
+            codeBlocks.forEach(container => {
+                const badge = container.querySelector('.code-badge');
+                const lang = badge ? badge.textContent : 'Código';
+
+                // Criar cabeçalho customizado com botão de copiar
+                const header = document.createElement('div');
+                header.className = 'code-header';
+                header.innerHTML = `
+                    <span class="code-badge">${lang}</span>
+                    <button class="copy-btn" title="Copiar código">
+                        📋 Copiar
+                    </button>
+                `;
+
+                if (badge) {
+                    badge.replaceWith(header);
+                } else {
+                    container.insertBefore(header, container.firstChild);
+                }
+
+                const copyBtn = header.querySelector('.copy-btn');
+                const codeElement = container.querySelector('code');
+
+                copyBtn.addEventListener('click', async () => {
+                    const textToCopy = codeElement.innerText;
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        copyBtn.classList.add('copied');
+                        copyBtn.innerHTML = '✓ Copiado!';
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyBtn.innerHTML = '📋 Copiar';
+                        }, 2000);
+                    } catch (err) {
+                        showToast('Não foi possível copiar o código.', 'error');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

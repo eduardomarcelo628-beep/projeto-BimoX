@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bimo X! - Painel Administrativo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        body {
+            display: none; /* Mantém oculto até validar a credencial de admin */
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto 4rem;
+            padding: 0 1.5rem;
+            width: 100%;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: rgba(25, 20, 48, 0.7);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            background: rgba(106, 90, 205, 0.25);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px solid rgba(106, 90, 205, 0.4);
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-info p {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* Table */
+        .table-wrapper {
+            background: rgba(25, 20, 48, 0.7);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            overflow-x: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.95rem;
+        }
+
+        .admin-table th {
+            background: rgba(18, 14, 41, 0.8);
+            color: #d8b4fe;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.8px;
+        }
+
+        .admin-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge-role {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-admin {
+            background: rgba(240, 46, 170, 0.2);
+            color: #f472b6;
+            border: 1px solid rgba(240, 46, 170, 0.4);
+        }
+
+        .badge-user {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger-sm {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-danger-sm:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="dashboard.html" class="nav-brand">
+            <span class="brand-badge">Admin</span>
+            <span class="brand-text">Bimo X • Gestão</span>
+        </a>
+        <div class="nav-user">
+            <a href="dashboard.html" class="btn-ghost">&larr; Ir para os Artigos</a>
+            <button id="logoutBtn" class="btn-ghost">Sair</button>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1 style="font-size: 2.2rem; font-weight: 800;">Painel de Usuários</h1>
+                <p style="color: var(--text-muted); margin-top: 4px;">Acompanhe alunos cadastrados, acessos e progresso de leitura.</p>
+            </div>
+            <button id="exportCsvBtn" class="btn-primary">📥 Exportar CSV</button>
+        </div>
+
+        <!-- Estatísticas Globais -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3>Total de Usuários</h3>
+                    <p id="totalUsersCount">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-info">
+                    <h3>Artigos na Plataforma</h3>
+                    <p id="totalArticlesCount">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-info">
+                    <h3>Artigos Concluídos</h3>
+                    <p id="totalReadCount">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Alunos / Usuários -->
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>E-mail</th>
+                        <th>Perfil</th>
+                        <th>Data de Cadastro</th>
+                        <th>Último Login</th>
+                        <th>Lidos</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Gerado dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 <strong>Bimo X!</strong> - Painel Administrativo</p>
+    </footer>
+
+    <script src="../data/articles.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script>
+        // Validação estrita e imediata antes de renderizar qualquer elemento
+        AuthService.requireAdmin().then(adminUser => {
+            if (adminUser) {
+                document.body.style.display = 'flex';
+                renderAdminDashboard();
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            AuthService.logout();
+        });
+
+        const usersTableBody = document.getElementById('usersTableBody');
+        const totalUsersCount = document.getElementById('totalUsersCount');
+        const totalArticlesCount = document.getElementById('totalArticlesCount');
+        const totalReadCount = document.getElementById('totalReadCount');
+
+        function formatDate(isoStr) {
+            if (!isoStr) return "-";
+            const date = new Date(isoStr);
+            return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function renderAdminDashboard() {
+            const users = await UserManager.getAllUsers();
+            totalUsersCount.textContent = users.length;
+            totalArticlesCount.textContent = ARTICLES_DATA.length;
+
+            const totalReads = users.reduce((acc, u) => acc + (u.completedArticles || 0), 0);
+            totalReadCount.textContent = totalReads;
+
+            usersTableBody.innerHTML = users.map(user => `
+                <tr>
+                    <td><strong>${user.name || 'Estudante'}</strong></td>
+                    <td style="color: var(--text-muted);">${user.email}</td>
+                    <td>
+                        <span class="badge-role ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}">
+                            ${user.role || 'user'}
+                        </span>
+                    </td>
+                    <td>${formatDate(user.createdAt)}</td>
+                    <td>${formatDate(user.lastLogin)}</td>
+                    <td><strong style="color: #f02eaa;">${user.completedArticles || 0}</strong> / ${ARTICLES_DATA.length}</td>
+                    <td>
+                        ${user.role !== 'admin' ? `
+                            <button class="btn-danger-sm" onclick="removeUser('${user.id}')" title="Excluir usuário">
+                                Excluir
+                            </button>
+                        ` : '<span style="color: var(--text-muted); font-size: 0.8rem;">Protegido</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.removeUser = async function(userId) {
+            if (confirm("Tem certeza que deseja remover este usuário da lista?")) {
+                await UserManager.deleteUser(userId);
+                await renderAdminDashboard();
+                showToast("Usuário removido com sucesso!", "success");
+            }
+        };
+
+        // Exportação CSV simples
+        document.getElementById('exportCsvBtn').addEventListener('click', async () => {
+            const users = await UserManager.getAllUsers();
+            let csv = "ID,Nome,Email,Role,Data Cadastro,Ultimo Login,Artigos Concluidos\n";
+            users.forEach(u => {
+                csv += `"${u.id}","${u.name}","${u.email}","${u.role || 'user'}","${u.createdAt}","${u.lastLogin}",${u.completedArticles || 0}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `bimox_usuarios_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        });
+    </script>
+</body>
+</html>

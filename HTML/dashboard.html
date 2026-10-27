@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bimo X! - Explorar Artigos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .progress-box {
+            max-width: 650px;
+            margin: 1.5rem auto 0;
+            background: rgba(25, 20, 48, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(240, 46, 170, 0.6);
+        }
+
+        .badge-read-status {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .badge-read-status.done {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-admin-link {
+            color: #f472b6 !important;
+            border-color: rgba(240, 46, 170, 0.4) !important;
+        }
+    </style>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <a href="dashboard.html" class="nav-brand">
+            <span class="brand-badge">X!</span>
+            <span class="brand-text">Bimo X</span>
+        </a>
+        <div class="nav-user">
+            <a href="admin.html" id="adminLink" class="btn-ghost nav-admin-link" style="display: none;">
+                ⚙️ Painel Admin
+            </a>
+            <span class="user-tag">Olá, <strong id="userNameDisplay">Estudante</strong></span>
+            <button id="logoutBtn" class="btn-ghost" title="Sair do sistema">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Sair
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section class="dashboard-hero">
+            <h1>Domine a Programação</h1>
+            <p>Conceitos fundamentais, códigos comentados e guias práticos em JavaScript, Python, Java e bancos de dados. 100% gratuito e direto ao ponto.</p>
+
+            <!-- Barra de Progresso do Aluno -->
+            <div class="progress-box">
+                <div class="progress-header">
+                    <span>Seu Progresso de Estudos</span>
+                    <strong id="progressText">0 de 7 concluídos (0%)</strong>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progressBarFill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros e Busca -->
+        <section class="filter-section">
+            <div class="search-box-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Pesquisar por tema, conceito ou tecnologia (ex: loops, sql, css)...">
+            </div>
+
+            <nav class="categories-nav" aria-label="Categorias de artigos">
+                <button class="filter-btn active" data-category="all">Todos os Artigos</button>
+                <button class="filter-btn" data-category="fundamentos">📦 Fundamentos</button>
+                <button class="filter-btn" data-category="frontend">🎨 Front-End</button>
+                <button class="filter-btn" data-category="backend">⚙️ Back-End</button>
+                <button class="filter-btn" data-category="database">🗄️ Banco de Dados</button>
+            </nav>
+        </section>
+
+        <!-- Grade de Artigos -->
+        <section class="articles-grid" id="articlesGrid">
+            <!-- Artigos inseridos dinamicamente pelo JS -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 <strong>Bimo X!</strong> Plataforma de Estudos em Computação. Criado para impulsionar sua carreira dev.</p>
+    </footer>
+
+    <script src="../data/articles.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // Autenticação e exibição do botão de Admin
+        AuthService.requireAuth().then(user => {
+            if (user) {
+                document.getElementById('userNameDisplay').textContent = user.name || user.email;
+                if (user.role === 'admin') {
+                    document.getElementById('adminLink').style.display = 'inline-flex';
+                }
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            AuthService.logout();
+        });
+
+        const grid = document.getElementById('articlesGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const progressText = document.getElementById('progressText');
+        const progressBarFill = document.getElementById('progressBarFill');
+
+        function updateProgress() {
+            const completed = ProgressManager.getCompletedArticles();
+            const total = ARTICLES_DATA.length;
+            const percent = total > 0 ? Math.round((completed.length / total) * 100) : 0;
+
+            progressText.textContent = `${completed.length} de ${total} concluídos (${percent}%)`;
+            progressBarFill.style.width = `${percent}%`;
+        }
+
+        function renderArticles() {
+            const completedList = ProgressManager.getCompletedArticles();
+
+            const filtered = ARTICLES_DATA.filter(article => {
+                const matchesCategory = currentFilter === 'all' || article.category === currentFilter;
+                const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Nenhum artigo encontrado 🧐</h3>
+                        <p>Tente buscar por outro termo ou selecione outra categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(article => {
+                const isRead = completedList.includes(article.id);
+                return `
+                    <a href="article.html?id=${article.id}" class="article-card">
+                        <div>
+                            <div class="card-top">
+                                <span class="category-tag">${article.categoryName}</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    ${isRead ? '<span class="badge-read-status done">✓ Lido</span>' : ''}
+                                    <span class="article-icon">${article.icon}</span>
+                                </div>
+                            </div>
+                            <h2>${article.title}</h2>
+                            <p>${article.excerpt}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span>⏱️ ${article.readTime} de leitura</span>
+                            <span class="read-more-link">Ler artigo &rarr;</span>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+
+            updateProgress();
+        }
+
+        // Filtro por categoria
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.category;
+                renderArticles();
+            });
+        });
+
+        // Busca em tempo real
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            renderArticles();
+        });
+
+        renderArticles();
+    </script>
+</body>
+</html>
