@@ -8,12 +8,24 @@
 
 Uma plataforma de estudos para quem está dando os primeiros passos no mundo da programação, com artigos curtos, exemplos comentados e acompanhamento de progresso.
 
+[![Ver demo](https://img.shields.io/badge/🌐_Ver_demo_online-8A5CF6?style=for-the-badge)](https://eduardomarcelo628-beep.github.io/projeto-BimoX/)
+
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Status](https://img.shields.io/badge/status-concluído-8A5CF6?style=for-the-badge)
 
 </div>
+
+---
+
+## 🌐 Acesse agora
+
+O Bimo X está publicado e pronto para usar, sem instalar nada:
+
+👉 **[eduardomarcelo628-beep.github.io/projeto-BimoX](https://eduardomarcelo628-beep.github.io/projeto-BimoX/)**
+
+Crie uma conta com qualquer e-mail e comece a estudar!
 
 ---
 
@@ -50,8 +62,6 @@ A ideia da plataforma é simples: ser um cantinho tranquilo (e bonito 💜) para
 
 ## 🖼️ Telas
 
-<!-- Salve os prints na pasta img/ com estes nomes, ou ajuste os caminhos abaixo -->
-
 | Login | Explorar artigos |
 |:---:|:---:|
 | <img src="img/teladelogin.png" alt="Tela de login" width="400" /> | <img src="img/teladeartigos.png" alt="Tela de artigos" width="400" /> |
@@ -81,6 +91,7 @@ Os artigos ficam todos centralizados em `data/articles.js`, então adicionar um 
 - **CSS3**: layout responsivo, efeitos de vidro (glassmorphism) e o tema roxo/estrelado
 - **JavaScript (Vanilla)**: lógica de autenticação, progresso, busca, filtros e painel admin
 - **Supabase**: base para a camada de autenticação/dados (ver `js/supabase-auth.js`)
+- **GitHub Pages**: hospedagem do site
 
 ---
 
@@ -102,6 +113,8 @@ projeto-BimoX/
 ├── img/                   # Imagens, ícones e planos de fundo
 ├── js/
 │   └── supabase-auth.js   # Autenticação, sessão, progresso e regras de acesso
+├── index.html             # Redireciona para HTML/index.html (necessário para o GitHub Pages)
+├── LICENSE
 └── README.md
 ```
 
@@ -109,13 +122,13 @@ projeto-BimoX/
 
 ## 🚀 Como rodar localmente
 
-Não precisa instalar nada! 🎉
+Prefere rodar na sua máquina? Não precisa instalar nada! 🎉
 
 1. **Clone o repositório**
    ```bash
    git clone https://github.com/eduardomarcelo628-beep/projeto-BimoX.git
    ```
-2. **Abra a pasta do projeto** e dê dois cliques em `HTML/index.html` para abrir no navegador.
+2. **Abra a pasta do projeto** e dê dois cliques em `index.html` (ou em `HTML/index.html`) para abrir no navegador.
 
 💡 *Dica:* se você usa o VS Code, a extensão **Live Server** deixa tudo mais agradável: clique com o botão direito em `HTML/index.html` → **Open with Live Server**.
 
@@ -129,16 +142,18 @@ Este é um **projeto educacional**. Como tudo roda no navegador (front-end), as 
 
 Na prática, um sistema de verdade validaria login, permissões e dados em um **back-end**, e esse é um dos próximos passos da minha evolução. 🌱
 
+Por isso, **não use no Bimo X uma senha que você usa em outros lugares**.
+
 ---
 
 ## 🛣️ Próximos passos (roadmap)
 
-- [ ] Migrar a autenticação e as permissões de admin para um back-end seguro
-- [ ] Salvar o progresso dos usuários em um banco de dados na nuvem
-- [ ] Recuperação de senha funcional
-- [ ] Mais artigos: Python, Java, Git e GitHub
-- [ ] Modo claro / escuro
-- [ ] Certificado de conclusão ao finalizar todos os artigos
+- Migrar a autenticação e as permissões de admin para um back-end seguro
+- Salvar o progresso dos usuários em um banco de dados na nuvem
+- Recuperação de senha funcional
+- Mais artigos: Python, Java, Git e GitHub
+- Modo claro / escuro
+- Certificado de conclusão ao finalizar todos os artigos
 
 ---
 
@@ -150,7 +165,7 @@ Construir o Bimo X me ajudou a praticar, na prática:
 - Manipulação do DOM, eventos e persistência de estado
 - Fluxos de cadastro, login e sessão
 - Diferença entre o que é **controle de acesso real** e o que é apenas **interface**
-- Uso de Git e GitHub para versionar e publicar o projeto
+- Uso de Git e GitHub para versionar, publicar e hospedar o projeto no GitHub Pages
 - Como trabalhar com um agente de IA: pedir, ler o resultado, questionar e ajustar
 
 ---
@@ -163,7 +178,7 @@ Sugestões, ideias e feedbacks são muito bem-vindos! Fique à vontade para abri
 
 ## 📄 Licença
 
-Distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
+Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
